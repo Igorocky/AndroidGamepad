@@ -10,7 +10,7 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
     override val viewModel: MainActivityViewModel by viewModels {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return MainActivityViewModel(applicationContext) as T
+                return (application as AndroidGamepadApp).appContainer.createMainActivityViewModel() as T
             }
         }
     }
@@ -47,8 +47,10 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
             } else if (y > 0.2) {
                 viewModel.onKeyDown(Constants.GAMEPAD_BUTTON_DOWN)
             }
+            return true
+        } else {
+            return super.onGenericMotionEvent(event)
         }
-        return true
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -56,7 +58,7 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
             viewModel.onKeyDown(keyCode)
             return true
         } else {
-            return super.dispatchKeyEvent(event)
+            return super.onKeyDown(keyCode, event)
         }
     }
 }

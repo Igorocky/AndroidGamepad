@@ -4,5 +4,5 @@ import android.app.Application
 
 class AndroidGamepadApp: Application() {
     private val log = LoggerImpl("AndroidGamepadApp")
-    val appContainer by lazy { AppContainer(context = applicationContext) }
+    val appContainer by lazy { AppContainer(appContext = applicationContext) }
 }
