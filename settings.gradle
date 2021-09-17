@@ -1,0 +1,2 @@
+rootProject.name = "AndroidGamepad"
+include ':app'
