@@ -1,1 +1,16 @@
 package org.igye.android.gamepad
+
+object Constants {
+    val GAMEPAD_BUTTON_X = 99
+    val GAMEPAD_BUTTON_Y = 100
+    val GAMEPAD_BUTTON_A = 96
+    val GAMEPAD_BUTTON_B = 97
+    val GAMEPAD_BUTTON_SELECT = 109
+    val GAMEPAD_BUTTON_START = 108
+    val GAMEPAD_BUTTON_LEFT = 1000
+    val GAMEPAD_BUTTON_RIGHT = 1001
+    val GAMEPAD_BUTTON_UP = 1002
+    val GAMEPAD_BUTTON_DOWN = 1003
+    val GAMEPAD_BUTTON_LEFT_SHIFT = 102
+    val GAMEPAD_BUTTON_RIGHT_SHIFT = 103
+}

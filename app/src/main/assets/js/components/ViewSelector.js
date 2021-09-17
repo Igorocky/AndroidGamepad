@@ -97,7 +97,7 @@ const ViewSelector = ({}) => {
 
     if (currentViewUrl) {
         return RE.Container.col.top.left({}, {},
-            renderControlButtons(),
+            // renderControlButtons(),
             renderSelectedView()
         )
     } else {

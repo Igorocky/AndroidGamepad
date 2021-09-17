@@ -63,13 +63,11 @@ abstract class WebViewViewModel(private val rootReactComponent: String, private 
     }
 
     @JavascriptInterface
-    fun invokeBeMethod(cbId:Long, methodName:String, args:String) {
+    fun invokeBeMethod(cbId:Long, methodName:String, args:String) = viewModelScope.launch(defaultDispatcher) {
         if (!beMethods.containsKey(methodName)) {
             returnDtoToFrontend(cbId, BeRespose<Any>(err = BeErr(code = 1000, msg = "backend method '$methodName' was not found")))
         } else {
-            viewModelScope.launch(defaultDispatcher) {
-                callFeCallback(cbId, beMethods[methodName]!!.invoke(defaultDispatcher, args)!!.await())
-            }
+            callFeCallback(cbId, beMethods[methodName]!!.invoke(defaultDispatcher, args)!!.await())
         }
     }
 
