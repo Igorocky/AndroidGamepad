@@ -24,10 +24,10 @@ class GameSelector(
             val userInput = events.keys().asSequence().minByOrNull { it.eventTime }!!
             events.remove(userInput)
             if (userInput.keyCode == GAMEPAD_BUTTON_LEFT_SHIFT) {
-                gs.play(gs.on_backspace)
                 if (currGame is CellsGame) {
                     currGame = CellsGame(gs)
                 }
+                gs.play(gs.on_backspace)
             } else {
                 currGame.onUserInput(userInput)
             }
