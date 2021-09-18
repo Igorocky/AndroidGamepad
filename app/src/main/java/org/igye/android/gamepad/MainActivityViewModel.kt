@@ -9,18 +9,12 @@ import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
     private val appContext: Context,
-    gameSounds: GameSounds,
+    private val gameSelector: GameSelector,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ): WebViewViewModel("ViewSelector") {
-    private val gs = gameSounds
 
-
-    fun onKeyDown(keyCode: Int) = viewModelScope.launch(defaultDispatcher) {
-        if (keyCode == Constants.GAMEPAD_BUTTON_UP) {
-            gs.play(arrayOf(gs.a,gs.b,gs.c))
-        } else if (keyCode == Constants.GAMEPAD_BUTTON_DOWN) {
-            gs.play(arrayOf(gs.c,gs.b,gs.a))
-        }
+    fun onKeyDown(userInput: UserInput) = viewModelScope.launch(defaultDispatcher) {
+        gameSelector.onUserInput(userInput)
     }
 
     override fun getWebView1(): WebView {

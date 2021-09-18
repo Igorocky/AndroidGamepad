@@ -9,3 +9,6 @@ data class BeRespose<T>(val data: T? = null, val err: BeErr? = null) {
     }
 }
 data class ListOfItems<T>(val complete: Boolean, val items: List<T>)
+
+data class UserInput(val keyCode:Int, val eventTime:Long)
+data class Cell(val x: Int, val y: Int)

@@ -9,12 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
-class GameSounds(
-    private val appContext: Context,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
-) {
-    private val soundPool: SoundPool
-    private val durations = HashMap<Int,Int>()
+interface GameSoundsI {
+    suspend fun play(vararg seq: Int)
+    suspend fun sayCell(cell: Cell)
     val _1: Int
     val _2: Int
     val _3: Int
@@ -43,6 +40,42 @@ class GameSounds(
     val on_go_to_start3: Int
     val on_next: Int
     val on_prev: Int
+}
+
+class GameSounds(
+    private val appContext: Context,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
+): GameSoundsI {
+    private val soundPool: SoundPool
+    private val durations = HashMap<Int,Int>()
+    override val _1: Int
+    override val _2: Int
+    override val _3: Int
+    override val _4: Int
+    override val _5: Int
+    override val _6: Int
+    override val _7: Int
+    override val _8: Int
+    override val a: Int
+    override val b: Int
+    override val c: Int
+    override val d: Int
+    override val e: Int
+    override val f: Int
+    override val g: Int
+    override val h: Int
+    override val on_backspace: Int
+    override val on_enter: Int
+    override val on_enter2: Int
+    override val on_error: Int
+    override val on_escape: Int
+    override val on_go_to_end: Int
+    override val on_go_to_end_teleport: Int
+    override val on_go_to_start: Int
+    override val on_go_to_start2: Int
+    override val on_go_to_start3: Int
+    override val on_next: Int
+    override val on_prev: Int
 
     init {
         val audioAttributes = AudioAttributes.Builder()
@@ -82,13 +115,17 @@ class GameSounds(
         on_prev = loadSound(R.raw.on_prev)
     }
 
-    suspend fun play(seq: Array<Int>) = withContext(defaultDispatcher) {
+    override suspend fun play(vararg seq: Int) = withContext(defaultDispatcher) {
         for (soundId in seq) {
             if (durations.containsKey(soundId)) {
                 soundPool.play(soundId,1.0f,1.0f,0, 0, 1.0f)
                 delay(durations[soundId]!!.toLong())
             }
         }
+    }
+
+    override suspend fun sayCell(cell: Cell) {
+        ChessUtils.sayCell(cell, this)
     }
 
     private fun loadSound(resourceId: Int): Int {

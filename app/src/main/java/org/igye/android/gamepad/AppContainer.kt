@@ -9,11 +9,12 @@ class AppContainer(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
     val gameSounds = GameSounds(appContext, defaultDispatcher)
+    val gameSelector = GameSelector(gameSounds)
 
     fun createMainActivityViewModel(): MainActivityViewModel {
         return MainActivityViewModel(
             appContext = appContext,
-            gameSounds = gameSounds
+            gameSelector = gameSelector
         )
     }
 }

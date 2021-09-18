@@ -38,14 +38,19 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
         if (event.source and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK) {
             val x = event.getX(0)
             val y = event.getY(0)
-            if (x < -0.2) {
-                viewModel.onKeyDown(Constants.GAMEPAD_BUTTON_LEFT)
+            val keyCode = if (x < -0.2) {
+                Constants.GAMEPAD_BUTTON_LEFT
             } else if (x > 0.2) {
-                viewModel.onKeyDown(Constants.GAMEPAD_BUTTON_RIGHT)
+                Constants.GAMEPAD_BUTTON_RIGHT
             } else if (y < -0.2) {
-                viewModel.onKeyDown(Constants.GAMEPAD_BUTTON_UP)
+                Constants.GAMEPAD_BUTTON_UP
             } else if (y > 0.2) {
-                viewModel.onKeyDown(Constants.GAMEPAD_BUTTON_DOWN)
+                Constants.GAMEPAD_BUTTON_DOWN
+            } else {
+                null
+            }
+            if (keyCode != null) {
+                viewModel.onKeyDown(UserInput(keyCode = keyCode, eventTime = event.eventTime))
             }
             return true
         } else {
@@ -55,7 +60,7 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (event.source and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD) {
-            viewModel.onKeyDown(keyCode)
+            viewModel.onKeyDown(UserInput(keyCode = keyCode, eventTime = event.eventTime))
             return true
         } else {
             return super.onKeyDown(keyCode, event)
