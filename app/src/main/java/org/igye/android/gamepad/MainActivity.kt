@@ -28,6 +28,14 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
                 // Hide the nav bar and status bar
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        viewModel.closeActivity.set { this.runOnUiThread {
+            finish()
+        } }
+    }
+
+    override fun onDestroy() {
+        viewModel.closeActivity.set { null }
+        super.onDestroy()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

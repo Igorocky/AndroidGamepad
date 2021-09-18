@@ -20,6 +20,8 @@ class CellsGame(gameSounds: GameSoundsI): GameI {
             gs.play(gs.on_enter2)
             nextCard()
             gs.sayCell(currCell)
+        } else {
+            gs.play(gs.on_error)
         }
     }
 

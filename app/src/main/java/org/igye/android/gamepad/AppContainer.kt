@@ -14,7 +14,8 @@ class AppContainer(
     fun createMainActivityViewModel(): MainActivityViewModel {
         return MainActivityViewModel(
             appContext = appContext,
-            gameSelector = gameSelector
+            gameSelector = gameSelector,
+            gameSounds = gameSounds
         )
     }
 }

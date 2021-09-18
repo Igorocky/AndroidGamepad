@@ -20,7 +20,7 @@ class GameSelector(
     }
 
     private suspend fun processInput() = withContext(gameSingleThreadContext) {
-        while (events.isNotEmpty()) {
+        while (events.isNotEmpty() && isActive) {
             val userInput = events.keys().asSequence().minByOrNull { it.eventTime }!!
             events.remove(userInput)
             if (userInput.keyCode == GAMEPAD_BUTTON_LEFT_SHIFT) {
