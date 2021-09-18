@@ -6,7 +6,7 @@ import kotlin.random.Random
 
 class CellsGame(gameSounds: GameSoundsI): GameI {
     private val gs = gameSounds
-    private val allCells: List<Cell> = generateSequence(0) { it+1 }.take(63).map(ChessUtils::cellNumToCell).toList()
+    private val allCells: List<Cell> = generateSequence(0) { it+1 }.take(64).map(ChessUtils::cellNumToCell).toList()
     private val counts: MutableMap<Cell, Int> = allCells.asSequence().map { it to 0 }.toMap().toMutableMap()
     private var currCell = allCells[Random.nextInt(0,allCells.size)]
     init {
