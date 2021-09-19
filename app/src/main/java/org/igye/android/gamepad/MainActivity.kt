@@ -59,7 +59,7 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
                 null
             }
             if (keyCode != null) {
-                viewModel.onKeyDown(UserInput(keyCode = keyCode, eventTime = event.eventTime))
+                viewModel.onKeyDown(ControllerEvent(keyCode = keyCode, eventTime = event.eventTime))
             }
             return true
         } else {
@@ -69,7 +69,7 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (event.source and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD) {
-            viewModel.onKeyDown(UserInput(keyCode = keyCode, eventTime = event.eventTime))
+            viewModel.onKeyDown(ControllerEvent(keyCode = keyCode, eventTime = event.eventTime))
             return true
         } else {
             return super.onKeyDown(keyCode, event)

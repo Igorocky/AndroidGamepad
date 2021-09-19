@@ -9,25 +9,25 @@ object ChessUtils {
         return cell.x*8+cell.y
     }
 
-    suspend fun sayCell(cell: Cell, gs: GameSounds) {
+    suspend fun sayCell(cell: Cell, gs: GameSoundsI) {
         gs.play(xCoordToSoundId(cell.x,gs), yCoordToSoundId(cell.y,gs))
     }
 
-    private fun yCoordToSoundId(y: Int, gs: GameSounds): Int {
+    private fun yCoordToSoundId(y: Int, gs: GameSoundsI): Int {
         return when (y) {
-            0 -> gs._1
-            1 -> gs._2
-            2 -> gs._3
-            3 -> gs._4
-            4 -> gs._5
-            5 -> gs._6
-            6 -> gs._7
-            7 -> gs._8
+            0 -> gs.one
+            1 -> gs.two
+            2 -> gs.three
+            3 -> gs.four
+            4 -> gs.five
+            5 -> gs.six
+            6 -> gs.seven
+            7 -> gs.eight
             else -> gs.on_error
         }
     }
 
-    private fun xCoordToSoundId(x: Int, gs: GameSounds): Int {
+    private fun xCoordToSoundId(x: Int, gs: GameSoundsI): Int {
         return when (x) {
             0 -> gs.a
             1 -> gs.b

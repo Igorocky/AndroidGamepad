@@ -1,5 +1,5 @@
 package org.igye.android.gamepad
 
-interface GameI {
+interface Game {
     suspend fun onUserInput(userInput: UserInput)
 }

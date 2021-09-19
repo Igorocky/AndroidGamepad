@@ -32,9 +32,9 @@ class MainActivityViewModel(
         }
     }
 
-    fun onKeyDown(userInput: UserInput) = viewModelScope.launch(defaultDispatcher) {
+    fun onKeyDown(controllerEvent: ControllerEvent) = viewModelScope.launch(defaultDispatcher) {
         lastInputTime.set(System.currentTimeMillis())
-        gameSelector.onUserInput(userInput)
+        gameSelector.onControllerEvent(controllerEvent)
     }
 
     override fun getWebView1(): WebView {

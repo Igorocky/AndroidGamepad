@@ -1,36 +1,46 @@
 package org.igye.android.gamepad
 
-import kotlinx.coroutines.*
-import org.igye.android.gamepad.Constants.GAMEPAD_BUTTON_LEFT_SHIFT
-import java.util.concurrent.ConcurrentHashMap
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class GameSelector(
     gameSounds: GameSoundsI,
-    private val gameSingleThreadContext: CoroutineDispatcher = newSingleThreadContext("GameSelectorContext")
-): GameI {
+    cellsGameFactory: () -> CellsGame = {CellsGame(gameSounds)},
+    morseGameFactory: () -> MorseGame = {MorseGame(gameSounds)},
+) {
     private val gs = gameSounds
-    private var currGame = CellsGame(gameSounds)
-    private var events = ConcurrentHashMap<UserInput,Int>()
+    private val gameFactories: SequentialElemSelector<() -> Game> = SequentialElemSelector(listOf(
+        cellsGameFactory,
+        morseGameFactory,
+    ))
+    private var currGame: Game = gameFactories.nextElem()()
+    private val controllerEventListener = ControllerEventListener(
+        gameSounds = gameSounds,
+        userInputListener = this::onUserInput
+    )
 
-    override suspend fun onUserInput(userInput: UserInput): Unit = coroutineScope {
+    suspend fun onControllerEvent(controllerEvent: ControllerEvent): Unit = coroutineScope {
         launch {
-            events.put(userInput,1)
-            processInput()
+            controllerEventListener.onControllerEvent(controllerEvent)
         }
     }
 
-    private suspend fun processInput() = withContext(gameSingleThreadContext) {
-        while (events.isNotEmpty() && isActive) {
-            val userInput = events.keys().asSequence().minByOrNull { it.eventTime }!!
-            events.remove(userInput)
-            if (userInput.keyCode == GAMEPAD_BUTTON_LEFT_SHIFT) {
-                if (currGame is CellsGame) {
-                    currGame = CellsGame(gs)
-                }
-                gs.play(gs.on_backspace)
-            } else {
-                currGame.onUserInput(userInput)
-            }
+    private suspend fun onUserInput(userInput: UserInput) {
+        if (userInput == UserInput.ESCAPE) {
+            currGame = gameFactories.nextElem()()
+            gs.play(gs.on_backspace)
+            delay(500)
+            sayCurrGameTitle()
+        } else {
+            currGame.onUserInput(userInput)
+        }
+    }
+
+    private suspend fun sayCurrGameTitle() {
+        when (currGame) {
+            is CellsGame -> gs.play(gs.cells)
+            is MorseGame -> gs.play(gs.morse)
         }
     }
 }

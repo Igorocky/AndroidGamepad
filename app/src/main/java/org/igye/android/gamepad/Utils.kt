@@ -6,12 +6,30 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import java.io.File
+import kotlin.random.Random
 
 object Utils {
     private val gson = Gson()
 
     fun <E> isEmpty(col: Collection<E>?): Boolean = col?.isEmpty()?:true
     fun <E> isNotEmpty(col: Collection<E>?): Boolean = !isEmpty(col)
+
+    fun nextRandomIdxByCounts(counts:IntArray): Int {
+        if (counts.isEmpty()) {
+            throw AndroidGamepadException("counts.isEmpty()")
+        }
+        val minCnt = counts.minOrNull()!!
+        val indexesWithMinCnt = counts.asSequence().mapIndexed{ idx, e -> Pair(idx,e) }.filter { it.second == minCnt }.map { it.first }.toList()
+        return indexesWithMinCnt[Random.nextInt(0,indexesWithMinCnt.size)]
+    }
+
+    fun nextSequentialIdxByCounts(counts:IntArray): Int {
+        if (counts.isEmpty()) {
+            throw AndroidGamepadException("counts.isEmpty()")
+        }
+        val minCnt = counts.minOrNull()!!
+        return counts.asSequence().mapIndexed{ idx, e -> Pair(idx,e) }.filter { it.second == minCnt }.first().first
+    }
 
     fun createMethodMap(jsInterfaces: List<Any>): Map<String, (defaultDispatcher:CoroutineDispatcher, String) -> Deferred<String>> {
         val resultMap = HashMap<String, (defaultDispatched:CoroutineDispatcher, String) -> Deferred<String>>()
