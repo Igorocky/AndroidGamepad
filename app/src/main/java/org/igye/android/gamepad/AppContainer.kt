@@ -9,7 +9,14 @@ class AppContainer(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
     val gameSounds = GameSounds(appContext, defaultDispatcher)
-    val gameSelector = GameSelector(gameSounds)
+    val gameSelector = GameSelector(
+        gameSounds = gameSounds,
+        controllerEventListenerFactory = { Code4ControllerEventListener(userInputListener = it, gameSounds = gameSounds) },
+        games = listOf(
+            { CellsGame(gameSounds = gameSounds) },
+            { Code4Game(gameSounds = gameSounds) },
+        )
+    )
 
     fun createMainActivityViewModel(): MainActivityViewModel {
         return MainActivityViewModel(

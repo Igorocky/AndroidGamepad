@@ -25,16 +25,16 @@ interface GameSoundsI {
     val on_next: Int
     val on_prev: Int
 
-    val zero: Int
-    val one: Int
-    val two: Int
-    val three: Int
-    val four: Int
-    val five: Int
-    val six: Int
-    val seven: Int
-    val eight: Int
-    val nine: Int
+    val _0: Int
+    val _1: Int
+    val _2: Int
+    val _3: Int
+    val _4: Int
+    val _5: Int
+    val _6: Int
+    val _7: Int
+    val _8: Int
+    val _9: Int
     val a: Int
     val b: Int
     val c: Int
@@ -73,6 +73,7 @@ interface GameSoundsI {
 
     val cells: Int
     val morse: Int
+    val code4: Int
 }
 
 class GameSounds(
@@ -91,7 +92,7 @@ class GameSounds(
     }
     private val durations = HashMap<Int,Int>()
 
-//    val temp: Int = R.raw.on_error
+    private val temp: Int = R.raw.on_error
 
     override val on_backspace: Int = loadSound(R.raw.on_backspace)
     override val on_enter: Int = loadSound(R.raw.on_enter)
@@ -106,16 +107,16 @@ class GameSounds(
     override val on_next: Int = loadSound(R.raw.on_next)
     override val on_prev: Int = loadSound(R.raw.on_prev)
 
-    override val zero: Int = loadSound(R.raw.zero)
-    override val one: Int = loadSound(R.raw.one)
-    override val two: Int = loadSound(R.raw.two)
-    override val three: Int = loadSound(R.raw.three)
-    override val four: Int = loadSound(R.raw.four)
-    override val five: Int = loadSound(R.raw.five)
-    override val six: Int = loadSound(R.raw.six)
-    override val seven: Int = loadSound(R.raw.seven)
-    override val eight: Int = loadSound(R.raw.eight)
-    override val nine: Int = loadSound(R.raw.nine)
+    override val _0: Int = loadSound(R.raw.zero)
+    override val _1: Int = loadSound(R.raw.one)
+    override val _2: Int = loadSound(R.raw.two)
+    override val _3: Int = loadSound(R.raw.three)
+    override val _4: Int = loadSound(R.raw.four)
+    override val _5: Int = loadSound(R.raw.five)
+    override val _6: Int = loadSound(R.raw.six)
+    override val _7: Int = loadSound(R.raw.seven)
+    override val _8: Int = loadSound(R.raw.eight)
+    override val _9: Int = loadSound(R.raw.nine)
     override val a: Int = loadSound(R.raw.a)
     override val b: Int = loadSound(R.raw.b)
     override val c: Int = loadSound(R.raw.c)
@@ -154,6 +155,7 @@ class GameSounds(
 
     override val cells: Int = loadSound(R.raw.cells)
     override val morse: Int = loadSound(R.raw.morse)
+    override val code4: Int = loadSound(R.raw.code4)
 
 
 

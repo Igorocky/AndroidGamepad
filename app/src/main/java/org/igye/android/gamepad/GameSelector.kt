@@ -6,19 +6,13 @@ import kotlinx.coroutines.launch
 
 class GameSelector(
     gameSounds: GameSoundsI,
-    cellsGameFactory: () -> CellsGame = {CellsGame(gameSounds)},
-    morseGameFactory: () -> MorseGame = {MorseGame(gameSounds)},
+    controllerEventListenerFactory: (suspend (UserInput) -> Unit) -> ControllerEventListener,
+    games: List<() -> Game> = listOf({CellsGame(gameSounds)}, {MorseGame(gameSounds)}),
 ) {
     private val gs = gameSounds
-    private val gameFactories: SequentialElemSelector<() -> Game> = SequentialElemSelector(listOf(
-        cellsGameFactory,
-        morseGameFactory,
-    ))
+    private val gameFactories: SequentialElemSelector<() -> Game> = SequentialElemSelector(games)
     private var currGame: Game = gameFactories.nextElem()()
-    private val controllerEventListener = ControllerEventListener(
-        gameSounds = gameSounds,
-        userInputListener = this::onUserInput
-    )
+    private val controllerEventListener = controllerEventListenerFactory(this::onUserInput)
 
     suspend fun onControllerEvent(controllerEvent: ControllerEvent): Unit = coroutineScope {
         launch {
@@ -30,17 +24,9 @@ class GameSelector(
         if (userInput == UserInput.ESCAPE) {
             currGame = gameFactories.nextElem()()
             gs.play(gs.on_backspace)
-            delay(500)
-            sayCurrGameTitle()
+            currGame.sayGameTitle()
         } else {
             currGame.onUserInput(userInput)
-        }
-    }
-
-    private suspend fun sayCurrGameTitle() {
-        when (currGame) {
-            is CellsGame -> gs.play(gs.cells)
-            is MorseGame -> gs.play(gs.morse)
         }
     }
 }

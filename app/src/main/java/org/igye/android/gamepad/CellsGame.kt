@@ -9,6 +9,9 @@ class CellsGame(
         generateSequence(0) { it+1 }.take(64).map(ChessUtils::cellNumToCell).toList()
     )
     private var currCell = allCells.nextElem()
+    override suspend fun sayGameTitle() {
+        gs.play(gs.cells)
+    }
 
     override suspend fun onUserInput(userInput: UserInput) {
         if (userInput == UserInput.RIGHT) {

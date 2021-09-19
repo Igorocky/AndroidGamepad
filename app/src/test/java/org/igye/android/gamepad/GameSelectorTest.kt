@@ -10,18 +10,11 @@ class GameSelectorTest {
         val gs = MockGameSounds()
         val gameSelector = GameSelector(
             gameSounds = gs,
-            cellsGameFactory = {
-                CellsGame(
-                    gameSounds = gs,
-                    nextElemSelectorFactory = {SequentialElemSelector(it)},
-                )
-            },
-            morseGameFactory = {
-                MorseGame(
-                    gameSounds = gs,
-                    nextElemSelectorFactory = {SequentialElemSelector(it)},
-                )
-            },
+            games = listOf(
+                { CellsGame(gameSounds = gs, nextElemSelectorFactory = {SequentialElemSelector(it)}) },
+                { MorseGame(gameSounds = gs, nextElemSelectorFactory = {SequentialElemSelector(it)}) }
+            ),
+            controllerEventListenerFactory = { MorseControllerEventListener(userInputListener = it, gameSounds = gs) }
         )
 
         //when
@@ -37,12 +30,12 @@ class GameSelectorTest {
         //when
         runBlocking { gameSelector.onControllerEvent(pressRight()) }
         //then
-        gs.assertPlayed(gs.a, gs.one)
+        gs.assertPlayed(gs.a, gs._1)
 
         //when
         runBlocking { gameSelector.onControllerEvent(pressUp()) }
         //then
-        gs.assertPlayed(gs.on_enter2, gs.a, gs.two)
+        gs.assertPlayed(gs.on_enter2, gs.a, gs._2)
 
         //when
         runBlocking { gameSelector.onControllerEvent(pressLeftShift()) }

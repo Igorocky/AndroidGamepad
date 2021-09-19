@@ -15,6 +15,9 @@ class MorseGame(
     val possibleCardsSet = possibleCards.toSet()
     private val allCards: NextElemSelector<UserInput> = nextElemSelectorFactory(possibleCards)
     private var currCard: UserInput = allCards.nextElem()
+    override suspend fun sayGameTitle() {
+        gs.play(gs.morse)
+    }
 
     override suspend fun onUserInput(userInput: UserInput) {
         if (userInput == currCard) {
@@ -63,16 +66,16 @@ class MorseGame(
             X -> gs.play(gs.xRay)
             Y -> gs.play(gs.yankee)
             Z -> gs.play(gs.zulu)
-            _0 -> gs.play(gs.zero)
-            _1 -> gs.play(gs.one)
-            _2 -> gs.play(gs.two)
-            _3 -> gs.play(gs.three)
-            _4 -> gs.play(gs.four)
-            _5 -> gs.play(gs.five)
-            _6 -> gs.play(gs.six)
-            _7 -> gs.play(gs.seven)
-            _8 -> gs.play(gs.eight)
-            _9 -> gs.play(gs.nine)
+            _0 -> gs.play(gs._0)
+            _1 -> gs.play(gs._1)
+            _2 -> gs.play(gs._2)
+            _3 -> gs.play(gs._3)
+            _4 -> gs.play(gs._4)
+            _5 -> gs.play(gs._5)
+            _6 -> gs.play(gs._6)
+            _7 -> gs.play(gs._7)
+            _8 -> gs.play(gs._8)
+            _9 -> gs.play(gs._9)
         }
     }
 }
