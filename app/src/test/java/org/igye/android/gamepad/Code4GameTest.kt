@@ -24,30 +24,31 @@ class Code4GameTest {
 
         //when
         runBlocking { gameSelector.onControllerEvent(press0()) }
-        runBlocking { gameSelector.onControllerEvent(press2()) }
-        runBlocking { gameSelector.onControllerEvent(press2()) }
+        runBlocking { gameSelector.onControllerEvent(press0()) }
+        runBlocking { gameSelector.onControllerEvent(press0()) }
         //then
-        gs.assertPlayed(gs.on_enter2, gs.bravo)
+        gs.assertPlayed(gs.on_enter2, gs._1)
 
         //when
         runBlocking { gameSelector.onControllerEvent(press1()) }
         runBlocking { gameSelector.onControllerEvent(press2()) }
         runBlocking { gameSelector.onControllerEvent(press0()) }
         //then
-        gs.assertPlayed(gs.on_error, gs._0, gs._2, gs._3)
-
-        //when
-        runBlocking { gameSelector.onControllerEvent(press2()) }
-        runBlocking { gameSelector.onControllerEvent(press2()) }
-        //then
-        gs.assertPlayed(gs.on_error)
+        gs.assertPlayed(gs.on_error, gs._0, gs._0, gs._1)
 
         //when
         runBlocking { gameSelector.onControllerEvent(press0()) }
+        runBlocking { gameSelector.onControllerEvent(press0()) }
         runBlocking { gameSelector.onControllerEvent(press2()) }
-        runBlocking { gameSelector.onControllerEvent(press3()) }
         //then
-        gs.assertPlayed(gs.on_enter2, gs.charlie)
+        gs.assertPlayed(gs.on_error, gs._0, gs._0, gs._1)
+
+        //when
+        runBlocking { gameSelector.onControllerEvent(press0()) }
+        runBlocking { gameSelector.onControllerEvent(press0()) }
+        runBlocking { gameSelector.onControllerEvent(press1()) }
+        //then
+        gs.assertPlayed(gs.on_enter2, gs._2)
     }
 
     private var time: Long = 0

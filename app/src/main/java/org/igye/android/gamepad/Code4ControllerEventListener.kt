@@ -24,6 +24,9 @@ class Code4ControllerEventListener(
 ): Closeable, ControllerEventListener {
     private val controllerEvents = ConcurrentLinkedQueue<ControllerEvent>()
     private var currNode: Code4TreeNode = Code4.root
+    private var isBlocked = false
+    private val unblockedSound = gameSounds.on_next
+    private val blockedSound = gameSounds.on_go_to_end
 
     override suspend fun onControllerEvent(controllerEvent: ControllerEvent): Unit = coroutineScope {
         launch {
@@ -35,25 +38,37 @@ class Code4ControllerEventListener(
     private suspend fun processControllerEvents() = withContext(singleThreadContext) {
         while (controllerEvents.isNotEmpty() && isActive) {
             val keyCode = getMin(controllerEvents).keyCode
-            if (keyCode == GAMEPAD_BUTTON_X || keyCode == GAMEPAD_BUTTON_B || keyCode == GAMEPAD_BUTTON_A || keyCode == GAMEPAD_BUTTON_Y) {
+            if (keyCode == GAMEPAD_BUTTON_START) {
+                unblock()
+            } else if (isBlocked) {
+                gameSounds.play(blockedSound)
+            } else if (keyCode == GAMEPAD_BUTTON_X || keyCode == GAMEPAD_BUTTON_B || keyCode == GAMEPAD_BUTTON_A || keyCode == GAMEPAD_BUTTON_Y) {
                 nextNode(keyCode)
                 if (currNode.userInput != null) {
                     selectCurrNode()
                 }
+            } else if (currNode !== Code4.root) {
+                block()
             } else {
-                currNode = Code4.root
-                if (keyCode == GAMEPAD_BUTTON_START) {
-                    gameSounds.play(gameSounds.on_next)
+                var userInput = keyCodeToUserInput(keyCode)
+                if (userInput == null) {
+                    block()
                 } else {
-                    var userInput = keyCodeToUserInput(keyCode)
-                    if (userInput == null) {
-                        gameSounds.play(gameSounds.on_error)
-                    } else {
-                        userInputListener(userInput)
-                    }
+                    userInputListener(userInput)
                 }
             }
         }
+    }
+
+    private suspend fun block() {
+        isBlocked = true
+        gameSounds.play(blockedSound)
+    }
+
+    private suspend fun unblock() {
+        isBlocked = false
+        currNode = Code4.root
+        gameSounds.play(unblockedSound)
     }
 
     private fun keyCodeToUserInput(keyCode: Int): UserInput? {
@@ -64,6 +79,7 @@ class Code4ControllerEventListener(
             GAMEPAD_BUTTON_DOWN -> DOWN
             GAMEPAD_BUTTON_LEFT_SHIFT -> ESCAPE
             GAMEPAD_BUTTON_RIGHT_SHIFT -> ENTER
+            GAMEPAD_BUTTON_SELECT -> SELECT
             else -> null
         }
     }
@@ -79,8 +95,7 @@ class Code4ControllerEventListener(
             currNode.child3
         }
         if (newNode == null) {
-            currNode = Code4.root
-            gameSounds.play(gameSounds.on_error)
+            block()
         } else {
             currNode = newNode
         }
@@ -89,10 +104,10 @@ class Code4ControllerEventListener(
     private suspend fun selectCurrNode() {
         val selectedInput = currNode.userInput
         currNode = Code4.root
-        if (selectedInput != null) {
-            userInputListener(selectedInput)
+        if (selectedInput == null) {
+            block()
         } else {
-            gameSounds.play(gameSounds.on_error)
+            userInputListener(selectedInput)
         }
     }
 

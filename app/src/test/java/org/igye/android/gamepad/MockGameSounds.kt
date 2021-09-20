@@ -24,6 +24,10 @@ class MockGameSounds: GameSoundsI {
         )
     }
 
+    fun assertPlayedNothing() {
+        TestCase.assertTrue(playedSounds.isEmpty())
+    }
+
     private var id = 0
     private val idToName: MutableMap<Int,String> = HashMap()
     private fun nextId(name:String): Int {

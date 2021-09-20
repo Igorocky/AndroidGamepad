@@ -57,20 +57,21 @@ class Code4Game(
     override suspend fun onUserInput(userInput: UserInput) {
         if (userInput == currCard) {
             gs.play(gs.on_enter2)
-            delay(300)
             currCard = nextCardSelector.nextElem()
             if (nextCardSelector.getCounts().toSet().size == 1) {
-                gs.play(gs.on_go_to_end)
-                gs.play(gs.on_go_to_end)
+                gs.play(gs.on_go_to_end_teleport)
             }
             sayQuestion()
         } else if (userInput == LEFT) {
             sayQuestion()
+        } else if (userInput == RIGHT) {
+            sayAnswer()
         } else if (userInput == DOWN) {
             changeGroup(1)
         } else if (userInput == UP) {
             changeGroup(-1)
         } else {
+            gs.play(gs.on_error)
             sayAnswer()
         }
     }
