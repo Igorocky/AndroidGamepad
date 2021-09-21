@@ -11,17 +11,17 @@ class AppContainer(
     val gameSounds = GameSounds(appContext, defaultDispatcher)
     val gameSelector = GameSelector(
         gameSounds = gameSounds,
-        controllerEventListenerFactory = { Code4ControllerEventListener(userInputListener = it, gameSounds = gameSounds) },
         games = listOf(
             { CellsGame(gameSounds = gameSounds) },
             { Code4Game(gameSounds = gameSounds) },
         )
     )
+    val controllerEventListener = Code4ControllerEventListener(userInputListener = gameSelector::onUserInput, gameSounds = gameSounds)
 
     fun createMainActivityViewModel(): MainActivityViewModel {
         return MainActivityViewModel(
             appContext = appContext,
-            gameSelector = gameSelector,
+            controllerEventListener = controllerEventListener,
             gameSounds = gameSounds
         )
     }

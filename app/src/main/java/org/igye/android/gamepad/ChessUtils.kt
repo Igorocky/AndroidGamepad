@@ -9,7 +9,7 @@ object ChessUtils {
         return cell.x*8+cell.y
     }
 
-    suspend fun sayCell(cell: Cell, gs: GameSoundsI) {
+    fun sayCell(cell: Cell, gs: GameSoundsI) {
         gs.play(xCoordToSoundId(cell.x,gs), yCoordToSoundId(cell.y,gs))
     }
 

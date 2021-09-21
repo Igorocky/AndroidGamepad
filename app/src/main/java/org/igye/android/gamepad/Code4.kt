@@ -13,7 +13,7 @@ data class Code4TreeNode(
 object Code4 {
     val root: Code4TreeNode = createCode4TreeNode("")!!
 
-    suspend fun sayCode(code: String, gameSounds: GameSoundsI) {
+    fun sayCode(code: String, gameSounds: GameSoundsI) {
         gameSounds.play(*(code.map { Utils.digitToSoundId(it, gameSounds) }.toIntArray()))
     }
 

@@ -1,6 +1,5 @@
 package org.igye.android.gamepad
 
-import kotlinx.coroutines.delay
 import org.igye.android.gamepad.UserInput.*
 import org.igye.android.gamepad.UserInput.R
 
@@ -50,11 +49,11 @@ class Code4Game(
     val possibleCardsSet = possibleCards.toSet()
     private var nextCardSelector: NextElemSelector<UserInput> = nextElemSelectorFactory(groups[currGroupIdx])
     private var currCard: UserInput = nextCardSelector.nextElem()
-    override suspend fun sayGameTitle() {
+    override fun sayGameTitle() {
         gs.play(gs.code4)
     }
 
-    override suspend fun onUserInput(userInput: UserInput) {
+    override fun onUserInput(userInput: UserInput): Boolean {
         if (userInput == currCard) {
             gs.play(gs.on_enter2)
             currCard = nextCardSelector.nextElem()
@@ -73,10 +72,12 @@ class Code4Game(
         } else {
             gs.play(gs.on_error)
             sayAnswer()
+            return false
         }
+        return true
     }
 
-    private suspend fun changeGroup(delta: Int) {
+    private fun changeGroup(delta: Int) {
         currGroupIdx = (groups.size + currGroupIdx + delta) % groups.size
         nextCardSelector = nextElemSelectorFactory(groups[currGroupIdx])
         currCard = nextCardSelector.nextElem()
@@ -86,11 +87,11 @@ class Code4Game(
 
     fun getCounts() = nextCardSelector.getCounts()
 
-    private suspend fun sayQuestion() {
+    private fun sayQuestion() {
         Utils.sayUserInput(currCard, gs)
     }
 
-    private suspend fun sayAnswer() {
+    private fun sayAnswer() {
         Code4.sayCode(Code4.userInputToCode(currCard)!!, gs)
     }
 }

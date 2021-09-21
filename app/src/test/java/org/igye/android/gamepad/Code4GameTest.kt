@@ -1,7 +1,7 @@
 package org.igye.android.gamepad
 
-import junit.framework.TestCase
-import kotlinx.coroutines.runBlocking
+import org.igye.TestUtils
+import org.igye.android.gamepad.UserInput.*
 import org.junit.Test
 
 class Code4GameTest {
@@ -14,41 +14,68 @@ class Code4GameTest {
             games = listOf(
                 { Code4Game(gameSounds = gs, nextElemSelectorFactory = {SequentialElemSelector(it)}) },
             ),
-            controllerEventListenerFactory = { Code4ControllerEventListener(userInputListener = it, gameSounds = gs) }
         )
 
         //when
-        runBlocking { gameSelector.onControllerEvent(pressLeftShift()) }
+        gameSelector.onUserInput(ESCAPE)
         //then
         gs.assertPlayed(gs.on_backspace, gs.code4)
 
         //when
-        runBlocking { gameSelector.onControllerEvent(press0()) }
-        runBlocking { gameSelector.onControllerEvent(press0()) }
-        runBlocking { gameSelector.onControllerEvent(press0()) }
+        gameSelector.onUserInput(_0)
         //then
         gs.assertPlayed(gs.on_enter2, gs._1)
 
         //when
-        runBlocking { gameSelector.onControllerEvent(press1()) }
-        runBlocking { gameSelector.onControllerEvent(press2()) }
-        runBlocking { gameSelector.onControllerEvent(press0()) }
+        gameSelector.onUserInput(P)
         //then
         gs.assertPlayed(gs.on_error, gs._0, gs._0, gs._1)
 
         //when
-        runBlocking { gameSelector.onControllerEvent(press0()) }
-        runBlocking { gameSelector.onControllerEvent(press0()) }
-        runBlocking { gameSelector.onControllerEvent(press2()) }
+        gameSelector.onUserInput(_2)
         //then
         gs.assertPlayed(gs.on_error, gs._0, gs._0, gs._1)
 
         //when
-        runBlocking { gameSelector.onControllerEvent(press0()) }
-        runBlocking { gameSelector.onControllerEvent(press0()) }
-        runBlocking { gameSelector.onControllerEvent(press1()) }
+        gameSelector.onUserInput(_1)
         //then
         gs.assertPlayed(gs.on_enter2, gs._2)
+    }
+
+    @Test
+    fun keyboard_is_blocked_on_incorrect_user_input() {
+        //given
+        val gs = MockGameSounds()
+        val unblockedSound = gs.on_next
+        val blockedSound = gs.on_go_to_end
+        val gameSelector = GameSelector(
+            gameSounds = gs,
+            games = listOf(
+                { Code4Game(gameSounds = gs, nextElemSelectorFactory = {SequentialElemSelector(it)}) },
+            ),
+        )
+        val controllerListener = Code4ControllerEventListener(
+            userInputListener = gameSelector::onUserInput,
+            gameSounds = gs
+        )
+
+        TestUtils.runTestCase(controllerListener, {
+            controllerListener.onControllerEvent(press0())
+            controllerListener.onControllerEvent(press0())
+            controllerListener.onControllerEvent(press0())
+        }) {
+            gs.assertPlayed(gs.on_enter2, gs._1)
+        }
+
+        TestUtils.runTestCase(controllerListener, {
+            controllerListener.onControllerEvent(press0())
+            controllerListener.onControllerEvent(press0())
+            controllerListener.onControllerEvent(press2())
+        }) {
+            gs.assertPlayed(gs.on_error, gs._0, gs._0, gs._1, blockedSound)
+        }
+
+        controllerListener.close()
     }
 
     private var time: Long = 0

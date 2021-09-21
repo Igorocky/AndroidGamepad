@@ -4,13 +4,10 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.SoundPool
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 interface GameSoundsI {
-    suspend fun play(vararg seq: Int)
+    fun play(vararg seq: Int): Long
 
     val on_backspace: Int
     val on_enter: Int
@@ -159,13 +156,18 @@ class GameSounds(
 
 
 
-    override suspend fun play(vararg seq: Int) = withContext(defaultDispatcher) {
-        for (soundId in seq) {
-            if (durations.containsKey(soundId)) {
-                soundPool.play(soundId,1.0f,1.0f,0, 0, 1.0f)
-                delay(durations[soundId]!!.toLong())
+    override fun play(vararg seq: Int): Long {
+        CoroutineScope(defaultDispatcher).launch {
+            for (soundId in seq) {
+                if (durations.containsKey(soundId)) {
+                    soundPool.play(soundId,1.0f,1.0f,0, 0, 1.0f)
+                    delay(durations[soundId]!!.toLong())
+                }
             }
         }
+        val delay = seq.asSequence().map(durations::get).filter { it != null }.map { it!!.toLong() }.sumOf { it }
+        Thread.sleep(delay)
+        return delay
     }
 
     private fun loadSound(resourceId: Int): Int {

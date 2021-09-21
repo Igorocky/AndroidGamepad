@@ -5,8 +5,9 @@ import junit.framework.TestCase
 class MockGameSounds: GameSoundsI {
     private val playedSounds = ArrayList<Int>()
 
-    override suspend fun play(vararg seq: Int) {
+    override fun play(vararg seq: Int): Long {
         seq.forEach(playedSounds::add)
+        return 0
     }
 
     fun getPlayedSounds(): ArrayList<Int> {

@@ -6,8 +6,9 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class MockedUserInputListener {
     private var userInput = ConcurrentLinkedQueue<UserInput>()
 
-    fun onUserInput(userInput: UserInput) {
+    fun onUserInput(userInput: UserInput): Boolean {
         this.userInput.add(userInput)
+        return true
     }
 
     fun assertUserInput(vararg expectedSeq: UserInput) {

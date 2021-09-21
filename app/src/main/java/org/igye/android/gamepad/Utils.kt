@@ -47,7 +47,7 @@ object Utils {
         }
     }
 
-    suspend fun sayUserInput(userInput: UserInput, gs: GameSoundsI) {
+    fun sayUserInput(userInput: UserInput, gs: GameSoundsI) {
         when(userInput) {
             UserInput.A -> gs.play(gs.alpha)
             UserInput.B -> gs.play(gs.bravo)

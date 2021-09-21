@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 class MainActivityViewModel(
     private val appContext: Context,
-    private val gameSelector: GameSelector,
+    private val controllerEventListener: ControllerEventListener,
     private val gameSounds: GameSounds,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ): WebViewViewModel("ViewSelector") {
@@ -32,9 +32,9 @@ class MainActivityViewModel(
         }
     }
 
-    fun onKeyDown(controllerEvent: ControllerEvent) = viewModelScope.launch(defaultDispatcher) {
+    fun onKeyDown(controllerEvent: ControllerEvent) {
         lastInputTime.set(System.currentTimeMillis())
-        gameSelector.onControllerEvent(controllerEvent)
+        controllerEventListener.onControllerEvent(controllerEvent)
     }
 
     override fun getWebView1(): WebView {

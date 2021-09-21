@@ -1,6 +1,9 @@
 package org.igye.android.gamepad
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.igye.android.gamepad.UserInput.*
 
 class MorseGame(
@@ -15,25 +18,28 @@ class MorseGame(
     val possibleCardsSet = possibleCards.toSet()
     private val allCards: NextElemSelector<UserInput> = nextElemSelectorFactory(possibleCards)
     private var currCard: UserInput = allCards.nextElem()
-    override suspend fun sayGameTitle() {
+    override fun sayGameTitle() {
         gs.play(gs.morse)
     }
 
-    override suspend fun onUserInput(userInput: UserInput) {
-        if (userInput == currCard) {
-            gs.play(gs.on_enter2)
-            delay(1000)
-            currCard = allCards.nextElem()
-            sayCurrCard()
-        } else if (userInput == RIGHT) {
-            sayCurrCard()
-        } else {
-            gs.play(gs.on_error)
-            if (possibleCards.contains(userInput)) {
-                delay(500)
+    override fun onUserInput(userInput: UserInput): Boolean {
+        CoroutineScope(Dispatchers.Default).launch {
+            if (userInput == currCard) {
+                gs.play(gs.on_enter2)
+                delay(1000)
+                currCard = allCards.nextElem()
                 sayCurrCard()
+            } else if (userInput == RIGHT) {
+                sayCurrCard()
+            } else {
+                gs.play(gs.on_error)
+                if (possibleCards.contains(userInput)) {
+                    delay(500)
+                    sayCurrCard()
+                }
             }
         }
+        return true
     }
 
     fun getCounts() = allCards.getCounts()

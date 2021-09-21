@@ -17,15 +17,15 @@ import java.io.Closeable
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class MorseControllerEventListener(
-    private val userInputListener: suspend (UserInput) -> Unit,
+    private val userInputListener: (UserInput) -> Unit,
     private val gameSounds: GameSoundsI,
     private val singleThreadContext: CoroutineDispatcher = newSingleThreadContext("MorseControllerEventListener"),
 ): Closeable, ControllerEventListener {
     private val controllerEvents = ConcurrentLinkedQueue<ControllerEvent>()
     private var morseNode: MorseTreeNode = Morse.root
 
-    override suspend fun onControllerEvent(controllerEvent: ControllerEvent): Unit = coroutineScope {
-        launch {
+    override fun onControllerEvent(controllerEvent: ControllerEvent) {
+        CoroutineScope(Dispatchers.Default).launch {
             controllerEvents.add(controllerEvent)
             processControllerEvents()
         }
