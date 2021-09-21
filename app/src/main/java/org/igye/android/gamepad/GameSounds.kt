@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 
 interface GameSoundsI {
     fun play(vararg seq: Int): Long
+    fun play(seq: List<Int>): Long = play(*seq.toIntArray())
 
     val on_backspace: Int
     val on_enter: Int
@@ -21,6 +22,8 @@ interface GameSoundsI {
     val on_go_to_start3: Int
     val on_next: Int
     val on_prev: Int
+    val pause200: Int
+    val pause400: Int
 
     val _0: Int
     val _1: Int
@@ -72,6 +75,9 @@ interface GameSoundsI {
     val morse: Int
     val code4: Int
     val on_enter_short: Int
+    val queens: Int
+    val question: Int
+    val answer: Int
 }
 
 class GameSounds(
@@ -105,6 +111,8 @@ class GameSounds(
     override val on_go_to_start3: Int = loadSound(R.raw.on_go_to_start3)
     override val on_next: Int = loadSound(R.raw.on_next)
     override val on_prev: Int = loadSound(R.raw.on_prev)
+    override val pause200: Int = loadSound(R.raw.pause400)
+    override val pause400: Int = loadSound(R.raw.pause400)
 
     override val _0: Int = loadSound(R.raw.zero)
     override val _1: Int = loadSound(R.raw.one)
@@ -155,6 +163,9 @@ class GameSounds(
     override val cells: Int = loadSound(R.raw.cells)
     override val morse: Int = loadSound(R.raw.morse)
     override val code4: Int = loadSound(R.raw.code4)
+    override val queens: Int = loadSound(R.raw.queens)
+    override val question: Int = loadSound(R.raw.question)
+    override val answer: Int = loadSound(R.raw.answer)
 
 
 
@@ -173,10 +184,16 @@ class GameSounds(
     }
 
     private fun loadSound(resourceId: Int): Int {
-        val player = MediaPlayer.create(appContext, resourceId)
         val soundId = soundPool.load(appContext, resourceId, 1)
-        durations.put(soundId, player.duration)
-        player.release()
+        if (resourceId == R.raw.pause200) {
+            durations.put(soundId, 200)
+        } else if (resourceId == R.raw.pause400) {
+            durations.put(soundId, 400)
+        } else {
+            val player = MediaPlayer.create(appContext, resourceId)
+            durations.put(soundId, player.duration)
+            player.release()
+        }
         return soundId
     }
 

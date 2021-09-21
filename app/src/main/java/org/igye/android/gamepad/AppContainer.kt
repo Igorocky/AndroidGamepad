@@ -14,6 +14,7 @@ class AppContainer(
         games = listOf(
             { CellsGame(gameSounds = gameSounds) },
             { Code4Game(gameSounds = gameSounds) },
+            { QueensGame(gameSounds = gameSounds) },
         )
     )
     val controllerEventListener = Code4ControllerEventListener(userInputListener = gameSelector::onUserInput, gameSounds = gameSounds)

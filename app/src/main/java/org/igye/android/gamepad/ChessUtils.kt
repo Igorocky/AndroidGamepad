@@ -9,8 +9,12 @@ object ChessUtils {
         return cell.x*8+cell.y
     }
 
+    fun cellToSoundIds(cell: Cell, gs: GameSoundsI):List<Int> {
+        return listOf(xCoordToSoundId(cell.x,gs), yCoordToSoundId(cell.y,gs))
+    }
+
     fun sayCell(cell: Cell, gs: GameSoundsI) {
-        gs.play(xCoordToSoundId(cell.x,gs), yCoordToSoundId(cell.y,gs))
+        gs.play(*cellToSoundIds(cell, gs).toIntArray())
     }
 
     private fun yCoordToSoundId(y: Int, gs: GameSoundsI): Int {

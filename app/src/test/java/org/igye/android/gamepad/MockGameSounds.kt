@@ -16,13 +16,18 @@ class MockGameSounds: GameSoundsI {
         return result
     }
 
+    fun showPlayedSounds(): List<String?> {
+        return playedSounds.map(idToName::get)
+    }
+
     fun assertPlayed(vararg expectedSeq: Int) {
-        val expected = expectedSeq.asSequence().map(idToName::get).toList()
-        val actual = getPlayedSounds().asSequence().map(idToName::get).toList()
-        TestCase.assertEquals(
-            expected,
-            actual
-        )
+        assertEquals(expectedSeq.toList(), getPlayedSounds())
+    }
+
+    fun assertEquals(expected: List<Int>, actual: List<Int>) {
+        val expected = expected.map(idToName::get)
+        val actual = actual.map(idToName::get)
+        TestCase.assertEquals(expected, actual)
     }
 
     fun assertPlayedNothing() {
@@ -40,6 +45,7 @@ class MockGameSounds: GameSoundsI {
     override val on_backspace: Int = nextId("on_backspace")
     override val on_enter: Int = nextId("on_enter")
     override val on_enter2: Int = nextId("on_enter2")
+    override val on_enter_short: Int = nextId("on_enter_short")
     override val on_error: Int = nextId("on_error")
     override val on_escape: Int = nextId("on_escape")
     override val on_go_to_end: Int = nextId("on_go_to_end")
@@ -49,6 +55,8 @@ class MockGameSounds: GameSoundsI {
     override val on_go_to_start3: Int = nextId("on_go_to_start3")
     override val on_next: Int = nextId("on_next")
     override val on_prev: Int = nextId("on_prev")
+    override val pause200: Int = nextId("pause200")
+    override val pause400: Int = nextId("pause400")
 
     override val _0: Int = nextId("zero")
     override val _1: Int = nextId("one")
@@ -99,4 +107,7 @@ class MockGameSounds: GameSoundsI {
     override val cells: Int = nextId("cells")
     override val morse: Int = nextId("morse")
     override val code4: Int = nextId("code4")
+    override val queens: Int = nextId("queens")
+    override val question: Int = nextId("question")
+    override val answer: Int = nextId("answer")
 }
