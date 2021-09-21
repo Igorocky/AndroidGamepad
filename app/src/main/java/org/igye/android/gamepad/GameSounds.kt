@@ -71,6 +71,7 @@ interface GameSoundsI {
     val cells: Int
     val morse: Int
     val code4: Int
+    val on_enter_short: Int
 }
 
 class GameSounds(
@@ -94,6 +95,7 @@ class GameSounds(
     override val on_backspace: Int = loadSound(R.raw.on_backspace)
     override val on_enter: Int = loadSound(R.raw.on_enter)
     override val on_enter2: Int = loadSound(R.raw.on_enter2)
+    override val on_enter_short: Int = loadSound(R.raw.on_enter_short)
     override val on_error: Int = loadSound(R.raw.on_error)
     override val on_escape: Int = loadSound(R.raw.on_escape)
     override val on_go_to_end: Int = loadSound(R.raw.on_go_to_end)

@@ -56,7 +56,14 @@ class Code4ControllerEventListener(
                         timeFilters.put(keyCode, currTime)
                         val delta = currTime - prevTime
                         if (delta > 100) {
-                            processControllerEvent(keyCode)
+                            if (keyCode == Constants.REPEAT_COUNT_TOO_BIG) {
+                                gameSounds.play(gameSounds.on_enter_short)
+                                gameSounds.play(gameSounds.on_enter_short)
+                            } else {
+                                processControllerEvent(keyCode)
+                            }
+                        } else {
+                            log.debug("delta = $delta")
                         }
                     }
                 }
@@ -142,6 +149,7 @@ class Code4ControllerEventListener(
     }
 
     private fun invokeUserInputListener(userInput: UserInput) {
+        gameSounds.play(gameSounds.on_next)
         if (!userInputListener(userInput)) {
             block()
         }

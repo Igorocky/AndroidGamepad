@@ -68,8 +68,15 @@ class MainActivity : WebViewActivity<MainActivityViewModel>() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (event.source and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD) {
-            viewModel.onKeyDown(ControllerEvent(keyCode = keyCode, eventTime = event.eventTime))
+        if (event.repeatCount != 0) {
+            log.debug("event.repeatCount = ${event.repeatCount}")
+        }
+        if ((event.source and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD)) {
+            if (event.repeatCount == 0) {
+                viewModel.onKeyDown(ControllerEvent(keyCode = keyCode, eventTime = event.eventTime))
+            } else if (event.repeatCount >= 100) {
+                viewModel.onKeyDown(ControllerEvent(keyCode = Constants.REPEAT_COUNT_TOO_BIG, eventTime = event.eventTime))
+            }
             return true
         } else {
             return super.onKeyDown(keyCode, event)
