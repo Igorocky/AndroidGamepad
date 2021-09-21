@@ -17,7 +17,8 @@ object TestUtils {
     }
     private var time: Long = 0
     fun press(keyCode:Int): ControllerEvent {
-        return ControllerEvent(keyCode = keyCode, eventTime = time++)
+        time += 300
+        return ControllerEvent(keyCode = keyCode, eventTime = time)
     }
     fun pressLeftShift(): ControllerEvent {
         return press(Constants.GAMEPAD_BUTTON_LEFT_SHIFT)

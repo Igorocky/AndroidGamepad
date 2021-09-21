@@ -34,27 +34,37 @@ class Code4ControllerEventListener(
     private val unblockedSound = gameSounds.on_next
     private val blockedSound = gameSounds.on_go_to_end
 
+    private val timeFilters: MutableMap<Int,Long> = HashMap()
+
     override fun close() {
         isActive.set(false)
     }
 
     init {
         Thread {
+            val log = LoggerImpl("Code4ControllerEventListener")
             while (isActive.get()) {
                 val event = controllerEvents.poll(2000, TimeUnit.MILLISECONDS)
                 if (event != null) {
-                    if (event.keyCode < 0) {
+                    val keyCode = event.keyCode
+                    if (keyCode < 0) {
                         onNegativeKeyCode.get()?.invoke()
                         onNegativeKeyCode.set(null)
                     } else {
-                        processControllerEvent(event.keyCode)
+                        val currTime = event.eventTime
+                        val prevTime = timeFilters.getOrDefault(keyCode, -1000)
+                        timeFilters.put(keyCode, currTime)
+                        val delta = currTime - prevTime
+                        if (delta > 100) {
+                            processControllerEvent(keyCode)
+                        }
                     }
                 }
             }
         }.start()
     }
 
-    override fun onControllerEvent(controllerEvent: ControllerEvent): Unit {
+    override fun onControllerEvent(controllerEvent: ControllerEvent) {
         controllerEvents.add(controllerEvent)
     }
 
