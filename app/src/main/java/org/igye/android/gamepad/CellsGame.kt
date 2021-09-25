@@ -15,10 +15,16 @@ class CellsGame(
 
     override fun onUserInput(userInput: UserInput): Boolean {
         if (userInput == UserInput.RIGHT) {
+            if (allCells.getCounts().toSet().size == 1) {
+                gs.play(gs.on_go_to_end_teleport)
+            }
             ChessUtils.sayCell(currCell, gs)
         } else if (userInput == UserInput.UP) {
             gs.play(gs.on_enter2)
             currCell = allCells.nextElem()
+            if (allCells.getCounts().toSet().size == 1) {
+                gs.play(gs.on_go_to_end_teleport)
+            }
             ChessUtils.sayCell(currCell, gs)
         } else {
             gs.play(gs.on_error)
